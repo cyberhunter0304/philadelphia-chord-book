@@ -1,0 +1,22 @@
+﻿{
+  "categories": [
+    {
+      "name": "Prayer",
+      "songs": [
+        "/songs/Prayer/AmazingGrace.json"
+      ]
+    },
+    {
+      "name": "Worship",
+      "songs": [
+        "/songs/Worship/HowGreatThouArt.json"
+      ]
+    },
+    {
+      "name": "Christmas",
+      "songs": [
+        "/songs/Christmas/SilentNight.json"
+      ]
+    }
+  ]
+}
