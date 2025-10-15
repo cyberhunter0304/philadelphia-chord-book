@@ -11,8 +11,8 @@ export default function FolderList({ folders, onSelectFolder, onAddFolder, onDel
   };
 
   return (
-    <aside className="w-64 shrink-0">
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+    <aside className="w-full lg:w-64 shrink-0">
+      <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-3 sm:p-4">
         <h2 className="text-sm font-medium text-gray-700 mb-3">Folders</h2>
         <ul className="mb-4 space-y-1">
           {Object.keys(folders).length === 0 && (

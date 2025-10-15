@@ -101,73 +101,144 @@ export default function App() {
   return (
     <div className="min-h-screen text-gray-900">
       <header className="sticky top-0 z-10 bg-white/70 backdrop-blur border-b border-brand-100">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
-          <h1 className="text-lg font-semibold tracking-tight mr-auto bg-gradient-to-r from-brand-700 to-accent-600 bg-clip-text text-transparent">Philadelphia Chord Book</h1>
-          <div className="relative w-full max-w-md">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setIsSearching(true);
-              }}
-              onFocus={() => setIsSearching(true)}
-              onBlur={() => setTimeout(() => setIsSearching(false), 150)}
-              placeholder="Search songs across all folders..."
-              className="input"
-            />
-            {isSearching && searchQuery.trim() !== "" && (
-              <div className="absolute mt-2 w-full bg-white/95 border border-brand-100 rounded-xl shadow-xl max-h-80 overflow-auto z-20 backdrop-blur">
-                {(() => {
-                  const q = searchQuery.trim().toLowerCase();
-                  const results = Object.entries(folders).flatMap(([folderName, list]) =>
-                    (list || []).map((song, index) => ({
-                      folderName,
-                      index,
-                      title: song.title || "Untitled",
-                      key: song.key || "C",
-                    }))
-                  ).filter(({ title }) => title.toLowerCase().includes(q));
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 py-2 sm:py-4">
+          {/* Mobile Layout */}
+          <div className="flex flex-col sm:hidden gap-2">
+            <div className="flex items-center justify-between">
+              <h1 className="text-base font-semibold tracking-tight bg-gradient-to-r from-brand-700 to-accent-600 bg-clip-text text-transparent">Philadelphia Chord Book</h1>
+            </div>
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsSearching(true);
+                }}
+                onFocus={() => setIsSearching(true)}
+                onBlur={() => setTimeout(() => setIsSearching(false), 150)}
+                placeholder="Search songs..."
+                className="input text-sm"
+              />
+              {isSearching && searchQuery.trim() !== "" && (
+                <div className="absolute mt-2 w-full bg-white/95 border border-brand-100 rounded-xl shadow-xl max-h-60 overflow-auto z-20 backdrop-blur">
+                  {(() => {
+                    const q = searchQuery.trim().toLowerCase();
+                    const results = Object.entries(folders).flatMap(([folderName, list]) =>
+                      (list || []).map((song, index) => ({
+                        folderName,
+                        index,
+                        title: song.title || "Untitled",
+                        key: song.key || "C",
+                      }))
+                    ).filter(({ title }) => title.toLowerCase().includes(q));
 
-                  if (results.length === 0) {
+                    if (results.length === 0) {
+                      return (
+                        <div className="px-3 py-2 text-xs text-gray-500">No matches</div>
+                      );
+                    }
+
                     return (
-                      <div className="px-3 py-2 text-xs text-gray-500">No matches</div>
+                      <ul className="py-1">
+                        {results.slice(0, 20).map(({ folderName, index, title, key }) => (
+                          <li key={`${folderName}-${index}`}>
+                            <button
+                              className="w-full text-left px-3 py-2 text-sm hover:bg-brand-50"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => {
+                                setSelectedFolder(folderName);
+                                const song = folders[folderName][index];
+                                setEditingIndex(index);
+                                setEditingSong(song);
+                                setIsEditing(true);
+                                setSearchQuery("");
+                                setIsSearching(false);
+                              }}
+                            >
+                              <span className="font-medium text-gray-800">{title}</span>
+                              <span className="ml-2 text-gray-400">({key})</span>
+                              <span className="ml-2 text-gray-500 text-xs">in {folderName}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
                     );
-                  }
+                  })()}
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center gap-4">
+            <h1 className="text-lg font-semibold tracking-tight mr-auto bg-gradient-to-r from-brand-700 to-accent-600 bg-clip-text text-transparent">Philadelphia Chord Book</h1>
+            <div className="relative w-full max-w-md">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsSearching(true);
+                }}
+                onFocus={() => setIsSearching(true)}
+                onBlur={() => setTimeout(() => setIsSearching(false), 150)}
+                placeholder="Search songs across all folders..."
+                className="input"
+              />
+              {isSearching && searchQuery.trim() !== "" && (
+                <div className="absolute mt-2 w-full bg-white/95 border border-brand-100 rounded-xl shadow-xl max-h-80 overflow-auto z-20 backdrop-blur">
+                  {(() => {
+                    const q = searchQuery.trim().toLowerCase();
+                    const results = Object.entries(folders).flatMap(([folderName, list]) =>
+                      (list || []).map((song, index) => ({
+                        folderName,
+                        index,
+                        title: song.title || "Untitled",
+                        key: song.key || "C",
+                      }))
+                    ).filter(({ title }) => title.toLowerCase().includes(q));
 
-                  return (
-                    <ul className="py-1">
-                      {results.slice(0, 50).map(({ folderName, index, title, key }) => (
-                        <li key={`${folderName}-${index}`}>
-                          <button
-                            className="w-full text-left px-3 py-2 text-sm hover:bg-brand-50"
-                            onMouseDown={(e) => e.preventDefault()}
-                            onClick={() => {
-                              setSelectedFolder(folderName);
-                              const song = folders[folderName][index];
-                              setEditingIndex(index);
-                              setEditingSong(song);
-                              setIsEditing(true);
-                              setSearchQuery("");
-                              setIsSearching(false);
-                            }}
-                          >
-                            <span className="font-medium text-gray-800">{title}</span>
-                            <span className="ml-2 text-gray-400">({key})</span>
-                            <span className="ml-2 text-gray-500 text-xs">in {folderName}</span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  );
-                })()}
-              </div>
-            )}
+                    if (results.length === 0) {
+                      return (
+                        <div className="px-3 py-2 text-xs text-gray-500">No matches</div>
+                      );
+                    }
+
+                    return (
+                      <ul className="py-1">
+                        {results.slice(0, 50).map(({ folderName, index, title, key }) => (
+                          <li key={`${folderName}-${index}`}>
+                            <button
+                              className="w-full text-left px-3 py-2 text-sm hover:bg-brand-50"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => {
+                                setSelectedFolder(folderName);
+                                const song = folders[folderName][index];
+                                setEditingIndex(index);
+                                setEditingSong(song);
+                                setIsEditing(true);
+                                setSearchQuery("");
+                                setIsSearching(false);
+                              }}
+                            >
+                              <span className="font-medium text-gray-800">{title}</span>
+                              <span className="ml-2 text-gray-400">({key})</span>
+                              <span className="ml-2 text-gray-500 text-xs">in {folderName}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex gap-6">
+      <main className="max-w-6xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
       <FolderList
         folders={folders}
             onSelectFolder={(name) => {
@@ -285,53 +356,55 @@ export default function App() {
                       {isFullscreen && (
                         <>
                           {/* Song Info Header in Presentation */}
-                          <div className="sticky top-2 z-10 mb-4 bg-white/95 backdrop-blur-sm rounded-lg p-3 border border-gray-200">
+                          <div className="sticky top-2 z-10 mb-4 bg-white/95 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-gray-200">
                             <div className="flex-1">
-                              <div className="flex items-center gap-4 mb-1">
-                                <h2 className="text-3xl font-bold">{folders[selectedFolder][selectedSong].title}</h2>
-                                <div className="flex gap-2">
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-1">
+                                <h2 className="text-xl sm:text-3xl font-bold">{folders[selectedFolder][selectedSong].title}</h2>
+                                <div className="flex items-center gap-2">
+                                  <div className="flex gap-1 sm:gap-2">
+                                    <button
+                                      className="btn-primary flex items-center justify-center p-2 sm:p-3"
+                                      onClick={() => setZoomLevel(Math.max(0.5, zoomLevel - 0.1))}
+                                      aria-label="Zoom out"
+                                      title="Zoom out"
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M8 11h6"/>
+                                      </svg>
+                                    </button>
+                                    <button
+                                      className="btn-primary flex items-center justify-center p-2 sm:p-3"
+                                      onClick={() => setZoomLevel(Math.min(2, zoomLevel + 0.1))}
+                                      aria-label="Zoom in"
+                                      title="Zoom in"
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/>
+                                      </svg>
+                                    </button>
+                                    <button
+                                      className="btn-primary flex items-center justify-center p-2 sm:p-3"
+                                      onClick={() => setZoomLevel(1)}
+                                      aria-label="Reset zoom"
+                                      title="Reset zoom"
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                        <path d="M3 3v5h5"/>
+                                      </svg>
+                                    </button>
+                                  </div>
                                   <button
-                                    className="btn-primary flex items-center justify-center"
-                                    onClick={() => setZoomLevel(Math.max(0.5, zoomLevel - 0.1))}
-                                    aria-label="Zoom out"
-                                    title="Zoom out"
+                                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg flex items-center justify-center ml-auto sm:ml-0"
+                                    onClick={exitFullscreen}
+                                    aria-label="Close presentation"
+                                    title="Close presentation"
                                   >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M8 11h6"/>
-                                    </svg>
-                                  </button>
-                                  <button
-                                    className="btn-primary flex items-center justify-center"
-                                    onClick={() => setZoomLevel(Math.min(2, zoomLevel + 0.1))}
-                                    aria-label="Zoom in"
-                                    title="Zoom in"
-                                  >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/>
-                                    </svg>
-                                  </button>
-                                  <button
-                                    className="btn-primary flex items-center justify-center"
-                                    onClick={() => setZoomLevel(1)}
-                                    aria-label="Reset zoom"
-                                    title="Reset zoom"
-                                  >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                                      <path d="M3 3v5h5"/>
-                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 6-12 12"/><path d="m6 6 12 12"/></svg>
                                   </button>
                                 </div>
-                                <button
-                                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg flex items-center justify-center ml-auto"
-                                  onClick={exitFullscreen}
-                                  aria-label="Close presentation"
-                                  title="Close presentation"
-                                >
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 6-12 12"/><path d="m6 6 12 12"/></svg>
-                                </button>
                               </div>
-                              <div className="flex gap-6 text-lg text-gray-600">
+                              <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 text-sm sm:text-lg text-gray-600">
                                 {folders[selectedFolder][selectedSong].style && <span><strong>Style:</strong> {folders[selectedFolder][selectedSong].style}</span>}
                                 {folders[selectedFolder][selectedSong].key && <span><strong>Key:</strong> {folders[selectedFolder][selectedSong].key}</span>}
                                 {folders[selectedFolder][selectedSong].tempo && <span><strong>Tempo:</strong> {folders[selectedFolder][selectedSong].tempo}</span>}
