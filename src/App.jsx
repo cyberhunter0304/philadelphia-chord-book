@@ -23,7 +23,7 @@ export default function App() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("http://localhost:5174/api/folders");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/folders`);
         const data = await res.json();
         setFolders(data || {});
       } catch (e) {
@@ -37,7 +37,7 @@ export default function App() {
 
   const addFolder = async (name) => {
     try {
-      const res = await fetch("http://localhost:5174/api/folders", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/folders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name })
@@ -49,7 +49,7 @@ export default function App() {
 
   const deleteFolder = async (name) => {
     try {
-      const res = await fetch(`http://localhost:5174/api/folders/${encodeURIComponent(name)}`, { method: "DELETE" });
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/folders/${encodeURIComponent(name)}`, { method: "DELETE" });
       const json = await res.json();
       if (json && json.folders) setFolders(json.folders);
       if (selectedFolder === name) setSelectedFolder(null);
@@ -276,7 +276,7 @@ export default function App() {
                     save={async (songData) => {
                       try {
                         if (editingIndex === null) {
-                          const res = await fetch(`http://localhost:5174/api/folders/${encodeURIComponent(selectedFolder)}/songs`, {
+                          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/folders/${encodeURIComponent(selectedFolder)}/songs`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(songData)
@@ -288,7 +288,7 @@ export default function App() {
                             setSelectedSong(newIndex >= 0 ? newIndex : null);
                           }
                         } else {
-                          const res = await fetch(`http://localhost:5174/api/folders/${encodeURIComponent(selectedFolder)}/songs/${editingIndex}`, {
+                          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/folders/${encodeURIComponent(selectedFolder)}/songs/${editingIndex}`, {
                             method: "PUT",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(songData)
@@ -441,7 +441,7 @@ export default function App() {
                     }}
                     deleteSong={async (folderName, index) => {
                       try {
-                        const res = await fetch(`http://localhost:5174/api/folders/${encodeURIComponent(folderName)}/songs/${index}`, { method: "DELETE" });
+                        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/folders/${encodeURIComponent(folderName)}/songs/${index}`, { method: "DELETE" });
                         const json = await res.json();
                         if (json && json.folders) setFolders(json.folders);
                         if (selectedSong === index) setSelectedSong(null);
