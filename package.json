@@ -1,28 +1,39 @@
 {
-  "name": "church-chords",
+  "name": "philly-chord",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "node server/index.js",
-    "dev:all": "concurrently \"npm run server\" \"vite\""
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "emulators": "firebase emulators:start",
+    "lint": "echo \"(no linter configured)\""
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.4",
+    "@radix-ui/react-dropdown-menu": "^2.1.4",
+    "@radix-ui/react-slot": "^1.1.1",
+    "@radix-ui/react-tooltip": "^1.1.6",
+    "@tanstack/react-query": "^5.62.7",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "firebase": "^11.1.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.1",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
-    "autoprefixer": "^10.4.21",
-    "concurrently": "^9.2.1",
-    "nodemon": "^3.1.10",
-    "postcss": "^8.5.6",
+    "baseline-browser-mapping": "^2.11.20",
+    "jsdom": "^25.0.1",
     "tailwindcss": "^4.1.14",
-    "vite": "^7.1.7"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "react-router-dom": "^7.9.4"
+    "vite": "^7.1.7",
+    "vitest": "^2.1.8"
   }
 }

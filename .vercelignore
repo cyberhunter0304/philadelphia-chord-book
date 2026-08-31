@@ -1,0 +1,9 @@
+# The FastAPI backend deploys to Cloud Run, not Vercel.
+backend/
+firebase.json
+firestore.rules
+firestore.indexes.json
+storage.rules
+.firebaserc
+.github/
+data/

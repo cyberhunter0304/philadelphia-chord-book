@@ -1,0 +1,16 @@
+rules_version = '2';
+
+// Attachment uploads happen via short-lived V4 signed URLs minted by the backend
+// for signed-in users, so client writes are denied here. Reads are public
+// (chord-sheet scans / reference audio are not sensitive).
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /song-attachments/{songId}/{fileName} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
